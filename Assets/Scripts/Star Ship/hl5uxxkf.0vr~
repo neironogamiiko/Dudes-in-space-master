@@ -1,0 +1,31 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpaceShip : MonoBehaviour
+{
+    private List<IShipComponent> _shipComponents;
+
+    private void LoadShipComponents()
+    {
+        _shipComponents = new List<IShipComponent>(GetComponentsInChildren<IShipComponent>());
+    }
+
+    private void TrySubscribeToTaskGenerator()
+    {
+        ITaskGenerator taskGenerator = GetComponent<TaskAsigner>().TaskGeneratorInstance;
+        taskGenerator.OnTaskGenerated += OnTaskGenerated;
+    }
+
+    public void OnTaskGenerated(object sender, TaskEventArgs args)
+    {
+        //args.TaskInstance;
+    }
+
+    private void Awake()
+    {
+        LoadShipComponents();
+        TrySubscribeToTaskGenerator();
+    }
+
+}

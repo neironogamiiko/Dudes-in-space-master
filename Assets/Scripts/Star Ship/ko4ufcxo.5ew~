@@ -1,0 +1,59 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class SpaceShip : MonoBehaviour
+{
+    public event Action<object, TaskEventArgs> OnFixedComponent;
+    private List<IShipComponent> _shipComponents;
+
+    private void LoadShipComponents()
+    {
+        _shipComponents = new List<IShipComponent>(GetComponentsInChildren<IShipComponent>());
+    }
+
+    private void TrySubscribeToTaskGenerator()
+    {
+        if (TryGetComponent(out TaskAsigner taskAsigner) && taskAsigner.TaskGeneratorInstance != null)
+        {
+            StartCoroutine()
+            taskAsigner.TaskGeneratorInstance.OnTaskGenerated += OnTaskGenerated;
+        }
+    }
+
+    IEnumerator WaitToTaskGeneratorToBeLoaded()
+    { }
+        while
+    }
+
+    public void OnTaskGenerated(object sender, TaskEventArgs args)
+    {
+        foreach (IShipComponent comp in _shipComponents)
+        {
+            comp.TaskToSolve = args.TaskInstance;
+        }
+    }
+
+    public void OnShipComponentFixed()
+    {
+        //OnFixedComponent?.Invoke(this, new EventArgs());
+    }
+
+    public void OnShipComponentFailedToFix()
+    {
+
+    }
+
+    public void OnShipComponentBroke()
+    {
+
+    }
+
+    private void Start()
+    {
+        LoadShipComponents();
+        TrySubscribeToTaskGenerator();
+    }
+
+}
